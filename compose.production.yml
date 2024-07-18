@@ -1,0 +1,16 @@
+services:
+  server:
+    build:
+      context: .
+      target: production
+    env_file:
+      - .env.production
+    ports:
+      - 4173:4173
+    environment:
+      SOME_KEY: ${OPTIONAL_KEY:-default_value}
+    volumes:
+      - static-files:/usr/app/static
+
+volumes:
+  static-files:

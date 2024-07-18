@@ -1,0 +1,41 @@
+services:
+  server:
+    build:
+      context: .
+      target: dev
+    env_file:
+      - .env
+    ports:
+      - 5173:5173
+    environment:
+      # Below is an example of how to specify env vars according to the values in .env
+      # Variables defined in .env.local are used automatically, but this allows you
+      # to set default values or error if a certain value isn't set by doing
+      # KEY: ${REQUIRED_KEY:?Required variable not set.}
+      SOME_KEY: ${OPTIONAL_KEY:-default_value}
+      # It also allows you to construct variables from other variables. E.g.
+      # DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}"
+      # Which is normally not possible in .env files
+    volumes:
+      - .:/usr/app
+      - /usr/app/node_modules # This is so it doesn't copy over node_modules
+
+# Below is an example postgres database that stores data in ./volumes/db-data. 
+# IMPORTANT: Make sure you use a volume in production!
+#   db:
+#     image: postgres
+#     restart: always
+#     user: postgres
+#     volumes:
+#       - ./volumes/db-data:/var/lib/postgresql/data
+#     environment:
+#       - POSTGRES_DB=${POSTGRES_DB:-local}
+#       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD Must be set}
+#       - POSTGRES_USER=${POSTGRES_USER:pguser}
+#     expose:
+#       - 5432
+#     healthcheck:
+#       test: [ "CMD", "pg_isready" ]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
